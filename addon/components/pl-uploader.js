@@ -27,6 +27,8 @@ export default Ember.Component.extend({
 
   'when-queued': null,
 
+  'before-upload': null,
+
   /**
     A cascading list of runtimes to fallback on to
     for uploading files with.
