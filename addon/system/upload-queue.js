@@ -41,7 +41,7 @@ export default Ember.ArrayProxy.extend({
 
     uploader.bind('FilesAdded',     bind(this, 'filesAdded'));
     uploader.bind('FilesRemoved',   bind(this, 'filesRemoved'));
-    uploader.bind('BeforeUpload',   bind(this, 'progressDidChange'));
+    uploader.bind('BeforeUpload',   bind(this, 'beforeUpload'));
     uploader.bind('UploadProgress', bind(this, 'progressDidChange'));
     uploader.bind('FileUploaded',   bind(this, 'fileUploaded'));
     uploader.bind('UploadComplete', bind(this, 'uploadComplete'));
@@ -109,6 +109,16 @@ export default Ember.ArrayProxy.extend({
         this.removeObject(file);
       }
     }
+  },
+
+  beforeUpload: function (uploader, file) {
+    get(this, 'target').sendAction('before-upload', file, {
+      name: get(this, 'name'),
+      uploader: uploader,
+      queue: this
+    });
+
+    this.progressDidChange(uploader, file);
   },
 
   progressDidChange: function (uploader, file) {

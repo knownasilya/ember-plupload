@@ -109,6 +109,37 @@ test('sends an event when the file is queued', function (assert) {
   }]);
 });
 
+test('sends event before the file is uploaded', function (assert) {
+  assert.expect(5);
+  var target = {
+    beforeUpload: function (file, env) {
+      assert.equal(get(file, 'id'), 'test');
+      assert.equal(get(file, 'name'), 'test-filename.jpg');
+      assert.equal(get(file, 'size'), 2000);
+      assert.equal(env.name, 'test-component');
+      assert.equal(env.uploader, uploader);
+    }
+  };
+
+  var component = this.subject({
+    name: 'test-component',
+    "before-upload": 'beforeUpload',
+    uploadQueueManager: UploadQueueManager.create()
+  });
+
+  this.render();
+  set(component, 'targetObject', target);
+
+  var uploader = get(component, 'queue.queues.firstObject');
+  var fileAttributes = {
+    id: 'test',
+    name: 'test-filename.jpg',
+    size: 2000
+  };
+
+  uploader.BeforeUpload(uploader, fileAttributes);
+});
+
 test('resolves file.upload when the file upload succeeds', function (assert) {
   var done = assert.async();
   assert.expect(4);
