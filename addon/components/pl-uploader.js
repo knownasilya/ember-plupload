@@ -151,6 +151,7 @@ export default Ember.Component.extend({
 
       keys(handlers).forEach(function (key) {
         Ember.$(document).on(key, '#' + dropzoneId, handlers[key]);
+        Ember.$(document).on(key, '.moxie-shim', handlers[key]);
       });
     }
   },
@@ -172,6 +173,7 @@ export default Ember.Component.extend({
       var handlers = this.eventHandlers;
       keys(handlers).forEach(function (key) {
         Ember.$(document).off(key, '#' + dropzoneId, handlers[key]);
+        Ember.$(document).off(key, '.moxie-shim', handlers[key]);
       });
       this.eventHandlers = null;
     }
