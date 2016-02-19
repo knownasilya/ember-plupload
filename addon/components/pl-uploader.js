@@ -169,13 +169,19 @@ export default Ember.Component.extend({
 
   dragData: null,
   enteredDropzone(evt) {
+    var e = evt.originalEvent;
+    if (e.preventDefault) { e.preventDefault(); }
+    if (e.stopPropagation) { e.stopPropagation(); }
     if (this._dragCounter === 0) {
         this.activateDropzone(evt.originalEvent);
     }
-    this._dragCounter++
+    this._dragCounter++;
   },
 
   leftDropzone(evt) {
+    var e = evt.originalEvent;
+    if (e.preventDefault) { e.preventDefault(); }
+    if (e.stopPropagation) { e.stopPropagation(); }
     this._dragCounter--;
     if (this._dragCounter === 0) {
       this.deactivateDropzone();
