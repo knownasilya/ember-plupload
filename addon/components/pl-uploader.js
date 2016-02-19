@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import DinoSheet from 'dinosheets';
 import trim from '../system/trim';
 import w from '../computed/w';
 
@@ -23,14 +22,6 @@ var isDragAndDropSupported = (function () {
     return supported;
   };
 }());
-
-var styleSheet;
-var sharedStyleSheet = function () {
-  if (styleSheet == null) {
-    styleSheet = new DinoSheet();
-  }
-  return styleSheet;
-};
 
 var slice = Array.prototype.slice;
 
@@ -162,9 +153,6 @@ export default Ember.Component.extend({
       queue.orphan();
       set(this, 'queue', null);
     }
-    let sheet = sharedStyleSheet();
-    sheet.css(`#${get(this, 'dropzone.id')} *`, null);
-    sheet.applyStyles();
   }),
 
   teardownDragListeners: Ember.on('willDestroyElement', function () {
@@ -195,19 +183,10 @@ export default Ember.Component.extend({
   },
 
   activateDropzone(evt) {
-    let sheet = sharedStyleSheet();
-    sheet.css(`#${get(this, 'dropzone.id')} *`, {
-      pointerEvents: 'none'
-    });
-    Ember.run.scheduleOnce('render', sheet, 'applyStyles');
     set(this, 'dragData', get(evt, 'dataTransfer'));
   },
 
   deactivateDropzone() {
-    let sheet = sharedStyleSheet();
-    sheet.css(`#${get(this, 'dropzone.id')} *`, null);
-    Ember.run.scheduleOnce('render', sheet, 'applyStyles');
-
     this._dragCounter = 0;
     set(this, 'dragData', null);
   },
