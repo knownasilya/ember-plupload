@@ -1,5 +1,8 @@
 # ember-plupload Changelog
 
+## 1.13.14 (April 6, 2016)
+* Allow headers with numbers in them to be parsed and returned correctly (Courtesy of @c0achmcguirk)
+
 ## 1.13.13 (March 15, 2016)
 * Add an API for mocking out file.read() for `ember-plupload/test-helpers`.
 * Update ember-cli
