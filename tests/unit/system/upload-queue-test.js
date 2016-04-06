@@ -120,3 +120,17 @@ test('responses are converted to the content-type no matter its casing', functio
                             .childNodes[0].nodeValue;
   assert.equal(status, '204');
 });
+
+test('response headers with numbers are still properly handled by parseResponse', function (assert) {
+  let queue = UploadQueue.create();
+  let response = queue.parseResponse({
+    status: 204,
+    response: '<ResponseStatus>204</ResponseStatus>',
+    responseHeaders: 'content-type: text/xml\r\nx-some-header-2: abc'
+  });
+
+  assert.deepEqual(response.headers, {
+    'content-type': 'text/xml',
+    'x-some-header-2' : 'abc'
+  });
+});
