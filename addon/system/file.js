@@ -27,7 +27,8 @@ const mergeDefaults = function (defaults, options) {
 const settingsToConfig = function (settings) {
   let {
     url, method, accepts, contentType, headers,
-    data, maxRetries, chunkSize, multipart, fileKey
+    data, maxRetries, chunkSize, multipart, fileKey,
+    withCredentials
   } = mergeDefaults({
     method: 'POST',
     accepts: ['application/json', 'text/javascript'],
@@ -37,7 +38,8 @@ const settingsToConfig = function (settings) {
     maxRetries: 0,
     chunkSize: 0,
     multipart: true,
-    fileKey: 'file'
+    fileKey: 'file',
+    withCredentials: false
   }, settings);
 
   if (headers.Accept == null) {
@@ -65,7 +67,8 @@ const settingsToConfig = function (settings) {
     multipart_params: data,
     max_retries: maxRetries,
     chunk_size: chunkSize,
-    file_data_name: fileKey
+    file_data_name: fileKey,
+    with_credentials: withCredentials
   };
 };
 
