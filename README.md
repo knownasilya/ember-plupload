@@ -44,7 +44,8 @@ This configuration is for the uploader instance as a whole. Most of the configur
 | `multipart`         | whether the file should be sent using using a multipart form object or as a binary stream.
 | `maxRetries`        | the maximum number of times to retry uploading the file
 | `chunkSize`         | the chunk size to split the file into when sending to the server
-| `fileKey`          | the name of the parameter to send the file as. defaults to `file`
+| `fileKey`           | the name of the parameter to send the file as. defaults to `file`
+| `withCredentials`   | whether the request should be sent with the withCredentials flag sent
 
 The function signature of `upload` is `upload(url, [settings])`, or `upload(settings)`.
 
