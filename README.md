@@ -294,7 +294,7 @@ class S3Direct
 
   def to_json
     {
-      url: "https://#{@options[:bucket]}.s3.amazonaws.com",
+      url: "https://s3.amazonaws.com/#{@options[:bucket]}",
       credentials: {
         AWSAccessKeyId: @access_key,
         policy:         policy,
