@@ -62,6 +62,7 @@ export default Ember.Component.extend({
 
   multiple: true,
   'unique-names': false,
+  'send-browser-cookies': false,
 
   dropzone: computed('for-dropzone', {
     get() {
@@ -98,7 +99,10 @@ export default Ember.Component.extend({
         container: get(this, 'elementId'),
         flash_swf_url: this.BASE_URL + 'Moxie.swf',
         silverlight_xap_url: this.BASE_URL + 'Moxie.xap',
-        unique_names: get(this, 'unique-names')
+        unique_names: get(this, 'unique-names'),
+        required_features: {
+          send_browser_cookies: get(this, 'send-browser-cookies')
+        }
       };
 
       var filters = get(this, 'fileFilters') || {};
