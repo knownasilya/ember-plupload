@@ -17,20 +17,21 @@ To use the uploader, you must provide a name (for proper queueing and bundling o
 The `{{pl-uploader}}` component exposes a variety of parameters for configuring plupload:
 
 
-| Attribute           | Definition
-|---------------------|------------------|
-| `name`              | a unique identifier of the uploader. used to rehydrate a component with its uploads happening in the background
-| `onfileadd`         | the name of the action to be called when a file is added to a queue
-| `onerror`           | the name of the action to be called when an error happens when creating a queue or uploading a file
-| `onInitOfUploader`  | the name of the action to be called when the component is initialized. This makes it so you have access to the methods of the native pluploader object. For instance, with the pluploader object you and manually add files with `pluploader.addFile(<file>)`.
-| `for`               | the ID of the browse button
-| `for-dropzone`      | the ID of the dropzone. this is auto generated if not provided
-| `max-file-size`     | the maximum size of file uploads
-| `no-duplicates`     | disallow duplicate files (determined by matching the file's name and size)
-| `extensions`        | a space-separated list of allowed file extensions
-| `multiple`          | whether multiple files can be selected
-| `unique-names`      | when set to `true`, this will rename files sent to the server and send the original name as a parameter named `name`
-| `runtimes`          | a space-separated list of runtimes for plupload to attempt to use (in order of importance)
+| Attribute              | Definition
+|------------------------|------------------|
+| `name`                 | a unique identifier of the uploader. used to rehydrate a component with its uploads happening in the background
+| `onfileadd`            | the name of the action to be called when a file is added to a queue
+| `onerror`              | the name of the action to be called when an error happens when creating a queue or uploading a file
+| `onInitOfUploader`     | the name of the action to be called when the component is initialized. This makes it so you have access to the methods of the native pluploader object. For instance, with the pluploader object you and manually add files with `pluploader.addFile(<file>)`.
+| `for`                  | the ID of the browse button
+| `for-dropzone`         | the ID of the dropzone. this is auto generated if not provided
+| `max-file-size`        | the maximum size of file uploads
+| `no-duplicates`        | disallow duplicate files (determined by matching the file's name and size)
+| `extensions`           | a space-separated list of allowed file extensions
+| `multiple`             | whether multiple files can be selected
+| `unique-names`         | when set to `true`, this will rename files sent to the server and send the original name as a parameter named `name`
+| `send-browser-cookies` | when set to `true`, this option will be added to the `required_features` of plupload (and enable `withCredentials`)
+| `runtimes`             | a space-separated list of runtimes for plupload to attempt to use (in order of importance)
 
 This configuration is for the uploader instance as a whole. Most of the configuration deals directly with the feel of the uploader. When the queued event is triggered, you will be given a file object that allows you to configure where the file is being uploaded:
 
@@ -44,7 +45,7 @@ This configuration is for the uploader instance as a whole. Most of the configur
 | `multipart`         | whether the file should be sent using using a multipart form object or as a binary stream.
 | `maxRetries`        | the maximum number of times to retry uploading the file
 | `chunkSize`         | the chunk size to split the file into when sending to the server
-| `fileKey`          | the name of the parameter to send the file as. defaults to `file`
+| `fileKey`           | the name of the parameter to send the file as. defaults to `file`
 
 The function signature of `upload` is `upload(url, [settings])`, or `upload(settings)`.
 

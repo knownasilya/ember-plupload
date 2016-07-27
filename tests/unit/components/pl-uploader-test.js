@@ -47,6 +47,9 @@ test('it configures the plupload Uploader correctly', function (assert) {
     silverlight_xap_url: '/assets/Moxie.xap',
     unique_names: false,
     multi_selection: true,
+    required_features: {
+      send_browser_cookies: false
+    },
     filters: {
       mime_types: [{
         extensions: 'jpg,png,gif'
@@ -89,6 +92,9 @@ test('when html5 is not a runtime, drop_element is not included', function (asse
     silverlight_xap_url: '/assets/Moxie.xap',
     unique_names: false,
     multi_selection: true,
+    required_features: {
+      send_browser_cookies: false
+    },
     filters: {
       mime_types: [{
         extensions: 'jpg,png,gif'
@@ -226,6 +232,9 @@ test('merges uploader settings with the settings provided in file.upload', funct
     file_data_name: 'file',
     unique_names: false,
     multi_selection: true,
+    required_features: {
+      send_browser_cookies: false
+    },
     filters: {
       mime_types: [{
         extensions: 'jpg,png,gif'
@@ -294,6 +303,9 @@ test('merges the url correctly if passed in as the first parameter to upload', f
     file_data_name: 'file',
     unique_names: false,
     multi_selection: true,
+    required_features: {
+      send_browser_cookies: false
+    },
     filters: {
       mime_types: [{
         extensions: 'jpg,png,gif'
@@ -354,6 +366,9 @@ test('use url correctly if it is the only argument', function (assert) {
     file_data_name: 'file',
     unique_names: false,
     multi_selection: true,
+    required_features: {
+      send_browser_cookies: false
+    },
     filters: {
       mime_types: [{
         extensions: 'jpg,png,gif'
