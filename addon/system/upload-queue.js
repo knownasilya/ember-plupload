@@ -260,7 +260,7 @@ export default Ember.ArrayProxy.extend({
       if (file == null) {
         file = File.create({
           uploader: uploader,
-          file: file
+          file: error.file
         });
       }
 
