@@ -100,10 +100,12 @@ export default Ember.Component.extend({
         flash_swf_url: this.BASE_URL + 'Moxie.swf',
         silverlight_xap_url: this.BASE_URL + 'Moxie.xap',
         unique_names: get(this, 'unique-names'),
-        required_features: {
-          send_browser_cookies: get(this, 'send-browser-cookies')
-        }
+        required_features: {}
       };
+
+      if (get(this, 'send-browser-cookies')) {
+        config.required_features.send_browser_cookies = true;
+      }
 
       var filters = get(this, 'fileFilters') || {};
       keys(filters).forEach((filter) => {
