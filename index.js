@@ -6,7 +6,15 @@ module.exports = {
 
   included: function (app) {
     this._super.included(app);
-    if (process.env.EMBER_ENV === 'development') {
+    var config = this.app.project.config(app.env) || {};
+    var addonConfig = config[this.name] || {};
+    var debugMode = addonConfig.debug;
+
+    if (debugMode === undefined) {
+      debugMode = process.env.EMBER_ENV === 'development';
+    }
+
+    if (debugMode) {
       app.import('bower_components/plupload/js/moxie.js');
       app.import('bower_components/plupload/js/plupload.dev.js');
     } else {
