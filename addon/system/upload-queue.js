@@ -138,7 +138,8 @@ export default Ember.ArrayProxy.extend({
     for (let i = 0, len = files.length; i < len; i++) {
       var file = File.create({
         uploader: uploader,
-        file: files[i]
+        file: files[i],
+        queue: this
       });
 
       this.pushObject(file);

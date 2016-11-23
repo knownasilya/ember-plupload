@@ -159,7 +159,9 @@ export default Ember.Object.extend({
       if (this.file.status === plupload.FAILED) {
         this.file.status = plupload.QUEUED;
       }
-      uploader.start();
+      if (this.get('queue').every((f) => f.settings)) {
+        uploader.start();
+      }
     }
 
     return this._deferred.promise;
