@@ -63,6 +63,7 @@ export default Ember.Component.extend({
   multiple: true,
   'unique-names': false,
   'send-browser-cookies': false,
+  'send-file-name': null,
 
   dropzone: computed('for-dropzone', {
     get() {
@@ -105,6 +106,10 @@ export default Ember.Component.extend({
 
       if (get(this, 'send-browser-cookies')) {
         config.required_features.send_browser_cookies = true;
+      }
+
+      if (get(this, 'send-file-name') != null) {
+        config.send_file_name = get(this, 'send-file-name');
       }
 
       var filters = get(this, 'fileFilters') || {};

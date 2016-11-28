@@ -31,6 +31,7 @@ The `{{pl-uploader}}` component exposes a variety of parameters for configuring 
 | `multiple`             | whether multiple files can be selected
 | `unique-names`         | when set to `true`, this will rename files sent to the server and send the original name as a parameter named `name`
 | `send-browser-cookies` | when set to `true`, this option will be added to the `required_features` of plupload (and enable `withCredentials`)
+| `send-file-name`       | whether to send the file name with the upload. This defaults to the plupload default.
 | `runtimes`             | a space-separated list of runtimes for plupload to attempt to use (in order of importance)
 
 This configuration is for the uploader instance as a whole. Most of the configuration deals directly with the feel of the uploader. When the queued event is triggered, you will be given a file object that allows you to configure where the file is being uploaded:

@@ -29,6 +29,7 @@ test('it configures the plupload Uploader correctly', function (assert) {
     extensions: 'JPG PNG GIF',
     'max-file-size': 256,
     'no-duplicates': true,
+    'send-file-name': true,
     uploader: Uploader.create()
   });
 
@@ -48,6 +49,7 @@ test('it configures the plupload Uploader correctly', function (assert) {
     unique_names: false,
     multi_selection: true,
     required_features: {},
+    send_file_name: true,
     filters: {
       mime_types: [{
         extensions: 'jpg,png,gif'
@@ -71,6 +73,7 @@ test('when html5 is not a runtime, drop_element is not included', function (asse
     extensions: 'JPG PNG GIF',
     'max-file-size': 256,
     'no-duplicates': true,
+    'send-file-name': false,
     uploader: Uploader.create(),
     runtimes: 'html4 flash'
   });
@@ -91,6 +94,7 @@ test('when html5 is not a runtime, drop_element is not included', function (asse
     unique_names: false,
     multi_selection: true,
     required_features: {},
+    send_file_name: false,
     filters: {
       mime_types: [{
         extensions: 'jpg,png,gif'
