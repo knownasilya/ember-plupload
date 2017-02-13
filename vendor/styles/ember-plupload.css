@@ -1,3 +1,7 @@
 .pl-uploader {
   position: relative;
 }
+
+.pl-uploader input[type="file"] {
+  z-index: 9999;
+}
