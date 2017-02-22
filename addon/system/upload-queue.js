@@ -278,7 +278,9 @@ export default Ember.ArrayProxy.extend({
           Ember.run.debounce(uploader, 'refresh', 750);
           return Ember.RSVP.reject(error, `File: '${error.file.id}' ${error.message}`);
         };
-        file.isDestroyed = true;
+        if (file) {
+          file.destroy();
+        }
 
         get(this, 'target').sendAction('onfileadd', file, {
           name: get(this, 'name'),

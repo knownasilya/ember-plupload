@@ -130,9 +130,8 @@ export default Ember.Object.extend({
     @method destroy
    */
   destroy() {
-    if (this.isDestroyed) { return; }
+    this._super(...arguments);
     get(this, 'uploader').removeFile(get(this, 'file'));
-    this.isDestroyed = true;
   },
 
   upload(url, settings) {
