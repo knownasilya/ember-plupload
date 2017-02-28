@@ -1,6 +1,8 @@
 /* global mOxie */
 import Ember from 'ember';
 
+const DATA_URI = 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
+
 function FakeFile(attrs) {
   this.id = Ember.generateGuid();
   attrs.plupload.total.size += attrs.size;
@@ -11,6 +13,10 @@ FakeFile.prototype = {
   upload(settings) {
     this.settings = settings;
     this.percent = 0;
+  },
+
+  read() {
+    return Ember.RSVP.resolve(DATA_URI);
   },
 
   respondWith(status, headers, body) {

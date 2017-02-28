@@ -8,7 +8,12 @@ moduleForComponent('pl-uploader', {
 });
 
 test('addFiles test helper integration', function(assert) {
+  assert.expect(5);
+
   this.on('uploadIt', (file) => {
+    file.read().then((dataUri) => {
+      assert.ok(dataUri, 'file is readable with data URI');
+    });
     file.upload();
   });
 
