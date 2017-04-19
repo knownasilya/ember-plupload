@@ -1,5 +1,7 @@
 # {{pl-uploader}} [![Build Status](https://travis-ci.org/tim-evans/ember-plupload.svg)](https://travis-ci.org/tim-evans/ember-plupload) [![Code Climate](https://codeclimate.com/github/tim-evans/ember-plupload/badges/gpa.svg)](https://codeclimate.com/github/tim-evans/ember-plupload) [![Ember Observer Score](http://emberobserver.com/badges/ember-plupload.svg)](http://emberobserver.com/addons/ember-plupload)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/tim-evans/ember-plupload.svg)](https://greenkeeper.io/)
+
 {{pl-uploader}} is an ember component that provides an API for [Plupload](http://www.plupload.com/). Uploads are persistent accross routes in your application (they continue in the background).
 
 To use the uploader, you must provide a name (for proper queueing and bundling of resources), and an upload URL.
