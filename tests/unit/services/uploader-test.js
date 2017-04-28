@@ -10,6 +10,10 @@ import {
 var get = Ember.get;
 var originalPlupload;
 
+const MockComponent = Ember.Object.extend({
+  sendAction() {}
+});
+
 module('service:uploader', {
   beforeEach: function () {
     originalPlupload = plupload.Uploader;
@@ -22,9 +26,9 @@ module('service:uploader', {
 
 test('the size of the uploader is the aggregate of all queues', function (assert) {
   var uploader = Uploader.create();
-  var queue1 = uploader.findOrCreate('queue1', Ember.Component.create(), {});
-  var queue2 = uploader.findOrCreate('queue2', Ember.Component.create(), {});
-  uploader.findOrCreate('queue3', Ember.Component.create(), {});
+  var queue1 = uploader.findOrCreate('queue1', MockComponent.create(), {});
+  var queue2 = uploader.findOrCreate('queue2', MockComponent.create(), {});
+  uploader.findOrCreate('queue3', MockComponent.create(), {});
 
   assert.equal(get(uploader, 'files.length'), 0);
   assert.equal(get(uploader, 'size'), 0);
@@ -70,7 +74,7 @@ test('the size of the uploader is the aggregate of all queues', function (assert
 
 test('the uploaded size of the uploader is the aggregate of all queues', function (assert) {
   var uploader = Uploader.create();
-  var queue1 = uploader.findOrCreate('queue1', Ember.Component.create(), {});
+  var queue1 = uploader.findOrCreate('queue1', MockComponent.create(), {});
 
   assert.equal(get(uploader, 'files.length'), 0);
   assert.equal(get(uploader, 'size'), 0);
@@ -89,7 +93,7 @@ test('the uploaded size of the uploader is the aggregate of all queues', functio
   assert.equal(get(uploader, 'loaded'), 500);
   assert.equal(get(uploader, 'progress'), 25);
 
-  var queue2 = uploader.findOrCreate('queue2', Ember.Component.create(), {});
+  var queue2 = uploader.findOrCreate('queue2', MockComponent.create(), {});
 
   get(queue2, 'queues.firstObject').addFile({
     id: 'test1',
@@ -103,7 +107,7 @@ test('the uploaded size of the uploader is the aggregate of all queues', functio
   assert.equal(get(uploader, 'loaded'), 1000);
   assert.equal(get(uploader, 'progress'), 18);
 
-  uploader.findOrCreate('queue3', Ember.Component.create(), {});
+  uploader.findOrCreate('queue3', MockComponent.create(), {});
 
   get(queue2, 'queues.firstObject').addFile({
     id: 'test2',

@@ -19,7 +19,8 @@ moduleForComponent('pl-uploader', {
   },
   afterEach: function () {
     plupload.Uploader = originalPlupload;
-  }
+  },
+  needs: ['service:uploader']
 });
 
 test('it configures the plupload Uploader correctly', function (assert) {
