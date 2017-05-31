@@ -43,7 +43,7 @@
     "file-upload"
   ],
   "dependencies": {
-    "ember-cli-babel": "^5.1.7",
+    "ember-cli-babel": "^6.2.0",
     "rsvp": "^3.0.17"
   },
   "ember-addon": {
