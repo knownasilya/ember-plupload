@@ -1,6 +1,12 @@
 /* jshint node: true */
 'use strict';
 
+const Funnel = require('broccoli-funnel');
+const Merge = require('broccoli-merge-trees');
+const path = require('path');
+const existsSync = require('exists-sync');
+const fastbootTransform = require('fastboot-transform');
+
 module.exports = {
   name: 'ember-plupload',
 
@@ -14,14 +20,14 @@ module.exports = {
       debugMode = process.env.EMBER_ENV === 'development';
     }
 
-    if (!process.env.EMBER_CLI_FASTBOOT) {
-      if (debugMode) {
-        app.import('bower_components/plupload/js/moxie.js');
-        app.import('bower_components/plupload/js/plupload.dev.js');
-      } else {
-        app.import('bower_components/plupload/js/plupload.full.min.js');
-      }
+
+    if (debugMode) {
+      app.import('vendor/plupload/moxie.js');
+      app.import('vendor/plupload/plupload.dev.js');
+    } else {
+      app.import('vendor/plupload/plupload.full.min.js');
     }
+
     app.import('bower_components/plupload/js/Moxie.swf', {
       destDir: 'assets'
     });
@@ -35,5 +41,27 @@ module.exports = {
     });
 
     app.import('vendor/styles/ember-plupload.css');
+  },
+
+  treeForVendor(tree) {
+    let trees = [];
+
+    if (tree) {
+      trees.push(tree);
+    }
+
+    const app = this._findHost();
+    let assetDir = path.join(this.project.root, app.bowerDirectory, 'plupload', 'js');
+    console.log(assetDir);
+
+    if (existsSync(assetDir)) {
+      const browserTrees = fastbootTransform(new Funnel(assetDir, {
+        files: ['moxie.js', 'plupload.dev.js', 'plupload.full.min.js'],
+        destDir: 'plupload'
+      }));
+      trees.push(browserTrees);
+    }
+
+    return new Merge(trees);
   }
 };

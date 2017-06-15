@@ -30,9 +30,9 @@
     "ember-cli-shims": "^1.0.2",
     "ember-cli-uglify": "^1.2.0",
     "ember-disable-prototype-extensions": "^1.1.0",
+    "ember-inline-svg": "0.1.11",
     "ember-load-initializers": "^1.0.0",
     "ember-resolver": "^4.1.0",
-    "ember-inline-svg": "0.1.11",
     "ember-source": "~2.13.2",
     "ember-try": "^0.2.13",
     "loader.js": "^4.2.3"
@@ -43,7 +43,11 @@
     "file-upload"
   ],
   "dependencies": {
+    "broccoli-funnel": "^1.2.0",
+    "broccoli-merge-trees": "^2.0.0",
     "ember-cli-babel": "^5.1.7",
+    "exists-sync": "^0.0.4",
+    "fastboot-transform": "^0.1.0",
     "rsvp": "^3.0.17"
   },
   "ember-addon": {
