@@ -1,4 +1,4 @@
-/* global mOxie, plupload */
+/* global moxie, plupload */
 import Ember from 'ember';
 
 const get = Ember.get;
@@ -6,8 +6,8 @@ const alias = Ember.computed.alias;
 const reads = Ember.computed.reads;
 
 const RSVP = Ember.RSVP;
-const mOxieFileReader = function () {
-  return new mOxie.FileReader();
+const moxieFileReader = function () {
+  return new moxie.file.FileReader();
 };
 
 const keys = Object.keys;
@@ -169,7 +169,7 @@ export default Ember.Object.extend({
   read(options = { as: 'data-url' }) {
     let file = get(this, 'file').getSource();
     /*jshint -W055 */
-    let reader = mOxieFileReader();
+    let reader = moxieFileReader();
     /*jshint +W055 */
     let { promise, resolve, reject } = RSVP.defer();
     reader.onloadend = resolve;
