@@ -52,7 +52,6 @@ module.exports = {
 
     const app = this._findHost();
     let assetDir = path.join(this.project.root, app.bowerDirectory, 'plupload', 'js');
-    console.log(assetDir);
 
     if (existsSync(assetDir)) {
       const browserTrees = fastbootTransform(new Funnel(assetDir, {
