@@ -3,5 +3,6 @@
   "dependencies": {
     "plupload": "~2.1.8",
     "dinosheets": "0.1.1"
-  }
+  },
+  "version": "1.13.21"
 }

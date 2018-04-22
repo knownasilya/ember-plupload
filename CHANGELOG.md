@@ -1,3 +1,19 @@
+# Change Log
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+<a name="1.13.21"></a>
+## [1.13.21](https://github.com/tim-evans/ember-plupload/compare/1.13.20...1.13.21) (2018-04-22)
+
+
+### Bug Fixes
+
+* Remove build time console.log ([cd0abb9](https://github.com/tim-evans/ember-plupload/commit/cd0abb9))
+* **deps:** update inline precompile to v1 ([0e35d63](https://github.com/tim-evans/ember-plupload/commit/0e35d63))
+* **deps:** update yarn lock file ([df4f435](https://github.com/tim-evans/ember-plupload/commit/df4f435))
+
+
+
 # ember-plupload Changelog
 
 ## 1.13.14 (April 6, 2016)
