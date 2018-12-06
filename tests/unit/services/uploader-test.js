@@ -11,7 +11,6 @@ import {
 var originalPlupload;
 
 const MockComponent = EmberObject.extend({
-  sendAction() {}
 });
 
 module('service:uploader', function(hooks) {

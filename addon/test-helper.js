@@ -93,13 +93,10 @@ addFiles(this.container, "${source.queueName}", {
   }
 };
 
-export function addFiles(owner, name, ...files) {
-  let uploader = owner.lookup('service:uploader');
-  let queue = uploader.findOrCreate(name);
-
-  assert(`To add a file, you must have queue with the name='${name}'`, queue);
-
+export function addFiles(queue, ...files) {
   let plupload = queue.get('queues.lastObject');
+  let name = queue.name;
+
   files = files.map(function (file) {
     return new FakeFile(merge({ queue, plupload, queueName: name }, file));
   });

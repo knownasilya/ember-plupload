@@ -473,7 +473,7 @@ module('pl-uploader', function(hooks) {
 
     // creates the component instance
     var component = this.owner.factoryFor('component:pl-uploader').create({
-      onInitOfUploader: 'onInitOfUploader',
+      onInitOfUploader: target.onInitOfUploader,
       uploader: Uploader.create()
     });
 

@@ -84,7 +84,7 @@ module('UploadQueue', function(hooks) {
     var done = assert.async();
     var queue = UploadQueue.create();
     queue.target = {
-      sendAction: function (action, file) {
+      onfileadd(file) {
         assert.ok(get(file, 'error'));
         file.upload().then(null, (error) => {
           assert.ok(error);

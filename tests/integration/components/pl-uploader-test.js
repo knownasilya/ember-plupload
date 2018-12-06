@@ -8,101 +8,132 @@ import hbs from 'htmlbars-inline-precompile';
 module('pl-uploader', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
-    this.actions = {};
-    this.send = (actionName, ...args) => this.actions[actionName].apply(this, args);
-  });
-
   test('addFiles test helper integration', async function(assert) {
-    this.actions.uploadIt = (file) => {
-      file.upload();
-    };
+    let file;
+
+    this.setProperties({
+      uploadIt(file)  {
+        file.upload();
+      },
+      onInit(pl, queue) {
+        [file] = addFiles(queue, {
+          name: 'Cat Eating Watermelon.png',
+          size: 2048
+        });
+      }
+    });
 
     await render(hbs`
-      {{#pl-uploader name='uploader' onfileadd='uploadIt' for='upload-image' as |queue|}}
+      <PlUploader
+        @name='uploader'
+        @onfileadd={{action this.uploadIt}}
+        @onInitOfUploader={{action this.onInit}}
+        @for='upload-image'
+      as |queue|>
         <div id="file-count">{{queue.length}}</div>
         <div id="file-progress">{{queue.progress}}</div>
         <div id="upload-image">Upload Image</div>
-      {{/pl-uploader}}
+      </PlUploader>
     `);
 
-    let file = addFiles(this.container, 'uploader', {
-      name: 'Cat Eating Watermelon.png',
-      size: 2048
-    })[0];
+    assert.dom('#file-count').hasText('1');
+    assert.dom('#file-progress').hasText('0');
 
-    assert.equal(find('#file-count').textContent, '1');
-
-    assert.equal(find('#file-progress').textContent, '0');
     file.progress = 80;
-    assert.equal(find('#file-progress').textContent, '80');
+    assert.dom('#file-progress').hasText('80');
 
     file.respondWith(200, { 'Content-Type': 'application/json' }, {});
-    assert.equal(find('#file-count').textContent, '0');
+    assert.dom('#file-count').hasText('0');
   });
 
   test('errors with read()', async function(assert) {
-    this.actions.makeItError = (file) => {
-      file.read().catch((error) => {
-        this.set('error', error);
-      });
-    };
+    this.setProperties({
+      makeItError(file) {
+        file.read().catch((error) => {
+          this.set('error', error);
+        });
+      },
+      onInit(pl, queue) {
+        addFiles(queue, {
+          name: 'Cat Eating Watermelon.png',
+          size: 2048,
+          dataURL: reject('really nasty error')
+        });
+      }
+    });
 
     await render(hbs`
       <div class='error'>{{error}}</div>
-      {{#pl-uploader name='uploader' onfileadd='makeItError' for='upload-image' as |queue|}}
-        <div id="upload-image">Upload Image</div>
-      {{/pl-uploader}}
+
+      <PlUploader
+        @name='uploader'
+        @onInitOfUploader={{action this.onInit}}
+        @onfileadd={{action this.makeItError}}
+        @for='upload-image'
+      >
+        <div id='upload-image'>Upload Image</div>
+      </PlUploader>
     `);
 
-    addFiles(this.container, 'uploader', {
-      name: 'Cat Eating Watermelon.png',
-      size: 2048,
-      dataURL: reject('really nasty error')
-    });
-
-    assert.equal(find('.error').textContent, 'really nasty error');
+    assert.dom('.error').hasText('really nasty error');
   });
 
   test('it works with read()', async function(assert) {
-    this.actions.makeItWork = (file) => {
-      file.read().then( (url) => {
-        this.set('cat', url);
-      });
-    };
+    this.setProperties({
+      makeItWork(file) {
+        file.read().then( (url) => {
+          this.set('cat', url);
+        });
+      },
+      onInit(pl, queue) {
+        addFiles(queue, {
+          name: 'Cat Eating Watermelon.png',
+          size: 2048,
+          dataURL: resolve('data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=')
+        });
+      }
+    });
 
     await render(hbs`
-      {{#pl-uploader name='uploader' onfileadd='makeItWork' for='upload-image' as |queue|}}
-        <div id="upload-image">Upload Image</div>
-      {{/pl-uploader}}
+      <PlUploader
+        @name='uploader'
+        @for='upload-image'
+        @onInitOfUploader={{action this.onInit}}
+        @onfileadd={{action this.makeItWork}}
+      >
+        <div id='upload-image'>Upload Image</div>
+      </PlUploader>
+
       <img src='{{cat}}' />
     `);
 
-    addFiles(this.container, 'uploader', {
-      name: 'Cat Eating Watermelon.png',
-      size: 2048,
-      dataURL: resolve('data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=')
-    });
-
-    assert.equal(find('img').getAttribute('src'), 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=');
+    assert.dom('img').hasAttribute('src', 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=');
   });
 
   test('no source is provided', async function(assert) {
-    this.actions.makeItWork = function(file) {
-      assert.throws( function() {
-        file.read({ as: 'text' });
-      }, /Cat Eating Watermelon.*text/);
-    };
+    this.setProperties({
+      makeItWork(file) {
+        assert.throws(() => {
+          file.read({ as: 'text' });
+        }, /Cat Eating Watermelon.*text/);
+      },
+      onInit(pl, queue) {
+        addFiles(queue, {
+          name: 'Cat Eating Watermelon.png',
+          size: 2048
+        });
+      }
+    });
 
     await render(hbs`
-      {{#pl-uploader name='uploader' onfileadd='makeItWork' for='upload-image' as |queue|}}
-        <div id="upload-image">Upload Image</div>
-      {{/pl-uploader}}
+      <PlUploader
+        @name='uploader'
+        @for='upload-image'
+        @onInitOfUploader={{action this.onInit}}
+        @onfileadd={{action this.makeItWork}}
+      >
+        <div id='upload-image'>Upload Image</div>
+      </PlUploader>
     `);
-
-    addFiles(this.container, 'uploader', {
-      name: 'Cat Eating Watermelon.png',
-      size: 2048
-    });
   });
 });

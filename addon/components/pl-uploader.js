@@ -141,13 +141,19 @@ export default Component.extend({
   }),
 
   attachUploader() {
-    var uploader = get(this, 'uploader');
-    var queue = uploader.findOrCreate(get(this, 'name'), this, get(this, 'config'));
+    let uploader = get(this, 'uploader');
+    let name = get(this, 'name');
+    let queue = uploader.findOrCreate(name, this, get(this, 'config'));
+
     set(this, 'queue', queue);
 
-    // Send up the pluploader object so the app implementing this component as has access to it
-    var pluploader = queue.get('queues.firstObject');
-    this.sendAction('onInitOfUploader', pluploader);
+    // Send up the pluploader object so the app implementing this component has access to it
+    let pluploader = queue.get('queues.firstObject');
+
+    if (this.onInitOfUploader) {
+      this.onInitOfUploader(pluploader, queue);
+    }
+
     this._dragInProgress = false;
     this._invalidateDragData();
   },

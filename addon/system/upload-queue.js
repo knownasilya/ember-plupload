@@ -32,11 +32,8 @@ var getHeader = function (headers, header) {
   @extend Ember.ArrayProxy
  */
 export default ArrayProxy.extend({
-
   name: null,
-
   uploading: bool('length'),
-
   queues: null,
 
   init() {
@@ -148,7 +145,7 @@ export default ArrayProxy.extend({
       });
 
       this.pushObject(file);
-      get(this, 'target').sendAction('onfileadd', file, {
+      get(this, 'target').onfileadd(file, {
         name: get(this, 'name'),
         uploader: uploader,
         queue: this
@@ -287,7 +284,7 @@ export default ArrayProxy.extend({
           file.destroy();
         }
 
-        get(this, 'target').sendAction('onfileadd', file, {
+        get(this, 'target').onfileadd(file, {
           name: get(this, 'name'),
           uploader: uploader,
           queue: this
@@ -297,7 +294,7 @@ export default ArrayProxy.extend({
       debounce(uploader, 'refresh', 750);
     } else {
       set(this, 'error', error);
-      get(this, 'target').sendAction('onerror', error);
+      get(this, 'target').onerror(error);
     }
   }
 });
