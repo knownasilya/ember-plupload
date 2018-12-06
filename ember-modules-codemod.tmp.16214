@@ -1,0 +1,1 @@
+[2,"MODEL_FACTORY_INJECTIONS",8,"tests/dummy/app/app.js","let App;\n\nEmber.MODEL_FACTORY_INJECTIONS = true;\n\nApp = Ember.Application.extend({"]

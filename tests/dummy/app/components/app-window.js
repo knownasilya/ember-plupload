@@ -1,19 +1,21 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import $ from 'jquery';
+import { scheduleOnce, bind, next } from '@ember/runloop';
+import { on } from '@ember/object/evented';
+import Component from '@ember/component';
+import { htmlSafe } from '@ember/template';
+import { get, set, computed, observer } from '@ember/object';
 import PageTitleList from 'ember-page-title/services/page-title-list';
 
-const get = Ember.get;
-const set = Ember.set;
-const { htmlSafe } = Ember.String;
-
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['window', 'app'],
   layoutName: 'components/window',
 
-  tokenList: Ember.computed(function () {
+  tokenList: computed(function () {
     return PageTitleList.create();
   }),
 
-  title: Ember.computed(function () {
+  title: computed(function () {
     let tokens = get(this, 'tokenList.sortedTokens');
     let title = [];
     for (let i = 0, len = tokens.length; i < len; i++) {
@@ -27,13 +29,13 @@ export default Ember.Component.extend({
     return htmlSafe(title.join(''));
   }),
 
-  titleDidChange: Ember.on('didInsertElement', function () {
-    Ember.run.scheduleOnce('afterRender', () => {
+  titleDidChange: on('didInsertElement', function () {
+    scheduleOnce('afterRender', () => {
       this.notifyPropertyChange('title');
     });
   }),
 
-  updateStyles: Ember.observer('tokenList.tokens.@each.active', function () {
+  updateStyles: observer('tokenList.tokens.@each.active', function () {
     get(this, 'tokenList.tokens').forEach((token) => {
       let $el = this.$(`#title-${token.id}`);
       if (!$el) { return; }
@@ -46,8 +48,8 @@ export default Ember.Component.extend({
   }),
 
   didInsertElement() {
-    this._activate = Ember.run.bind(this, this.activate);
-    Ember.run.next(() => {
+    this._activate = bind(this, this.activate);
+    next(() => {
       this.$().on('click', '.title-token', this._activate);
     });
   },
@@ -57,7 +59,7 @@ export default Ember.Component.extend({
   },
 
   activate(evt) {
-    let tokenId = Ember.$(evt.target).attr('id').split('-')[1];
+    let tokenId = $(evt.target).attr('id').split('-')[1];
     let tokens = get(this, 'tokenList.tokens');
     let components = get(this, 'tokenList.tokens').getEach('component');
 
@@ -65,7 +67,7 @@ export default Ember.Component.extend({
     let active = !get(token, 'active');
 
     tokens.setEach('active', false);
-    Ember.A(components).setEach('active', false);
+    A(components).setEach('active', false);
 
     set(token, 'component.active', active);
     set(token, 'active', active);

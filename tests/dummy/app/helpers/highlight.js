@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
+import { htmlSafe } from '@ember/template';
 
-const { htmlSafe } = Ember.String;
-
-export default Ember.Helper.helper(function (params) {
+export default buildHelper(function (params) {
   return htmlSafe(params.join('').replace(/([a-z]+)=/g, function (_, attr) {
     return `<span class='attribute'>${attr}</span>=`;
   }).replace(/("[^"]*"|true|false)/g, function (string) {

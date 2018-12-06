@@ -1,101 +1,108 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { reject, resolve } from 'rsvp';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find } from '@ember/test-helpers';
 import { addFiles } from 'ember-plupload/test-helper';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 
-moduleForComponent('pl-uploader', {
-  integration: true
-});
+module('pl-uploader', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('addFiles test helper integration', function(assert) {
-  this.on('uploadIt', (file) => {
-    file.upload();
+  hooks.beforeEach(function() {
+    this.actions = {};
+    this.send = (actionName, ...args) => this.actions[actionName].apply(this, args);
   });
 
-  this.render(hbs`
-    {{#pl-uploader name='uploader' onfileadd='uploadIt' for='upload-image' as |queue|}}
-      <div id="file-count">{{queue.length}}</div>
-      <div id="file-progress">{{queue.progress}}</div>
-      <div id="upload-image">Upload Image</div>
-    {{/pl-uploader}}
-  `);
+  test('addFiles test helper integration', async function(assert) {
+    this.actions.uploadIt = (file) => {
+      file.upload();
+    };
 
-  let file = addFiles(this.container, 'uploader', {
-    name: 'Cat Eating Watermelon.png',
-    size: 2048
-  })[0];
+    await render(hbs`
+      {{#pl-uploader name='uploader' onfileadd='uploadIt' for='upload-image' as |queue|}}
+        <div id="file-count">{{queue.length}}</div>
+        <div id="file-progress">{{queue.progress}}</div>
+        <div id="upload-image">Upload Image</div>
+      {{/pl-uploader}}
+    `);
 
-  assert.equal(this.$('#file-count').text(), '1');
+    let file = addFiles(this.container, 'uploader', {
+      name: 'Cat Eating Watermelon.png',
+      size: 2048
+    })[0];
 
-  assert.equal(this.$('#file-progress').text(), '0');
-  file.progress = 80;
-  assert.equal(this.$('#file-progress').text(), '80');
+    assert.equal(find('#file-count').textContent, '1');
 
-  file.respondWith(200, { 'Content-Type': 'application/json' }, {});
-  assert.equal(this.$('#file-count').text(), '0');
-});
+    assert.equal(find('#file-progress').textContent, '0');
+    file.progress = 80;
+    assert.equal(find('#file-progress').textContent, '80');
 
-test('errors with read()', function(assert){
-  this.on('makeItError', (file) => {
-    file.read().catch((error) => {
-      this.set('error', error);
+    file.respondWith(200, { 'Content-Type': 'application/json' }, {});
+    assert.equal(find('#file-count').textContent, '0');
+  });
+
+  test('errors with read()', async function(assert) {
+    this.actions.makeItError = (file) => {
+      file.read().catch((error) => {
+        this.set('error', error);
+      });
+    };
+
+    await render(hbs`
+      <div class='error'>{{error}}</div>
+      {{#pl-uploader name='uploader' onfileadd='makeItError' for='upload-image' as |queue|}}
+        <div id="upload-image">Upload Image</div>
+      {{/pl-uploader}}
+    `);
+
+    addFiles(this.container, 'uploader', {
+      name: 'Cat Eating Watermelon.png',
+      size: 2048,
+      dataURL: reject('really nasty error')
     });
+
+    assert.equal(find('.error').textContent, 'really nasty error');
   });
 
-  this.render(hbs`
-    <div class='error'>{{error}}</div>
-    {{#pl-uploader name='uploader' onfileadd='makeItError' for='upload-image' as |queue|}}
-      <div id="upload-image">Upload Image</div>
-    {{/pl-uploader}}
-  `);
+  test('it works with read()', async function(assert) {
+    this.actions.makeItWork = (file) => {
+      file.read().then( (url) => {
+        this.set('cat', url);
+      });
+    };
 
-  addFiles(this.container, 'uploader', {
-    name: 'Cat Eating Watermelon.png',
-    size: 2048,
-    dataURL: Ember.RSVP.reject('really nasty error')
-  });
+    await render(hbs`
+      {{#pl-uploader name='uploader' onfileadd='makeItWork' for='upload-image' as |queue|}}
+        <div id="upload-image">Upload Image</div>
+      {{/pl-uploader}}
+      <img src='{{cat}}' />
+    `);
 
-  assert.equal(this.$('.error').text(), 'really nasty error');
-});
-
-test('it works with read()', function(assert){
-  this.on('makeItWork', (file) => {
-    file.read().then( (url) => {
-      this.set('cat', url);
+    addFiles(this.container, 'uploader', {
+      name: 'Cat Eating Watermelon.png',
+      size: 2048,
+      dataURL: resolve('data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=')
     });
+
+    assert.equal(find('img').getAttribute('src'), 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=');
   });
 
-  this.render(hbs`
-    {{#pl-uploader name='uploader' onfileadd='makeItWork' for='upload-image' as |queue|}}
-      <div id="upload-image">Upload Image</div>
-    {{/pl-uploader}}
-    <img src='{{cat}}' />
-  `);
+  test('no source is provided', async function(assert) {
+    this.actions.makeItWork = function(file) {
+      assert.throws( function() {
+        file.read({ as: 'text' });
+      }, /Cat Eating Watermelon.*text/);
+    };
 
-  addFiles(this.container, 'uploader', {
-    name: 'Cat Eating Watermelon.png',
-    size: 2048,
-    dataURL: Ember.RSVP.resolve('data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=')
-  });
+    await render(hbs`
+      {{#pl-uploader name='uploader' onfileadd='makeItWork' for='upload-image' as |queue|}}
+        <div id="upload-image">Upload Image</div>
+      {{/pl-uploader}}
+    `);
 
-  assert.equal(this.$('img').attr('src'), 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=');
-});
-
-test('no source is provided', function(assert){
-  this.on('makeItWork', function(file) {
-    assert.throws( function() {
-      file.read({ as: 'text' });
-    }, /Cat Eating Watermelon.*text/);
-  });
-
-  this.render(hbs`
-    {{#pl-uploader name='uploader' onfileadd='makeItWork' for='upload-image' as |queue|}}
-      <div id="upload-image">Upload Image</div>
-    {{/pl-uploader}}
-  `);
-
-  addFiles(this.container, 'uploader', {
-    name: 'Cat Eating Watermelon.png',
-    size: 2048
+    addFiles(this.container, 'uploader', {
+      name: 'Cat Eating Watermelon.png',
+      size: 2048
+    });
   });
 });

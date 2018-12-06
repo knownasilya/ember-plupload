@@ -1,14 +1,14 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { on } from '@ember/object/evented';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { bind, scheduleOnce } from '@ember/runloop';
+import { get, set, computed, observer } from '@ember/object';
 import DinoSheet from 'dinosheets';
 import trim from '../system/trim';
 import w from '../computed/w';
 
-var get = Ember.get;
-var set = Ember.set;
 var keys = Object.keys;
-
-var bind = Ember.run.bind;
-var computed = Ember.computed;
 
 var isDragAndDropSupported = (function () {
   var supported = null;
@@ -34,7 +34,7 @@ var sharedStyleSheet = function () {
 
 var slice = Array.prototype.slice;
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['pl-uploader'],
 
   name: null,
@@ -44,7 +44,7 @@ export default Ember.Component.extend({
   onfileadd: null,
   onerror: null,
 
-  uploader: Ember.inject.service(),
+  uploader: service(),
 
   /**
     A cascading list of runtimes to fallback on to
@@ -135,9 +135,9 @@ export default Ember.Component.extend({
     }
   }),
 
-  didInsertElement: Ember.on('didInsertElement', function() {
-    Ember.run.scheduleOnce('afterRender', this, 'attachUploader');
-    Ember.run.scheduleOnce('afterRender', this, 'setupDragListeners');
+  didInsertElement: on('didInsertElement', function() {
+    scheduleOnce('afterRender', this, 'attachUploader');
+    scheduleOnce('afterRender', this, 'setupDragListeners');
   }),
 
   attachUploader() {
@@ -161,12 +161,12 @@ export default Ember.Component.extend({
       };
 
       keys(handlers).forEach(function (key) {
-        Ember.$(document).on(key, '#' + dropzoneId, handlers[key]);
+        $(document).on(key, '#' + dropzoneId, handlers[key]);
       });
     }
   },
 
-  detachUploader: Ember.on('willDestroyElement', function () {
+  detachUploader: on('willDestroyElement', function () {
     var queue = get(this, 'queue');
     if (queue) {
       queue.orphan();
@@ -177,12 +177,12 @@ export default Ember.Component.extend({
     sheet.applyStyles();
   }),
 
-  teardownDragListeners: Ember.on('willDestroyElement', function () {
+  teardownDragListeners: on('willDestroyElement', function () {
     var dropzoneId = get(this, 'dropzone.id');
     if (dropzoneId) {
       var handlers = this.eventHandlers;
       keys(handlers).forEach(function (key) {
-        Ember.$(document).off(key, '#' + dropzoneId, handlers[key]);
+        $(document).off(key, '#' + dropzoneId, handlers[key]);
       });
       this.eventHandlers = null;
     }
@@ -208,20 +208,20 @@ export default Ember.Component.extend({
     sheet.css(`#${get(this, 'dropzone.id')} *`, {
       pointerEvents: 'none'
     });
-    Ember.run.scheduleOnce('render', sheet, 'applyStyles');
+    scheduleOnce('render', sheet, 'applyStyles');
     set(this, 'dragData', get(evt, 'dataTransfer'));
   },
 
   deactivateDropzone() {
     let sheet = sharedStyleSheet();
     sheet.css(`#${get(this, 'dropzone.id')} *`, null);
-    Ember.run.scheduleOnce('render', sheet, 'applyStyles');
+    scheduleOnce('render', sheet, 'applyStyles');
 
     this._dragInProgress = false;
     set(this, 'dragData', null);
   },
 
-  _invalidateDragData: Ember.observer('queue.length', function () {
+  _invalidateDragData: observer('queue.length', function () {
     // Looks like someone dropped a file
     const filesAdded = get(this, 'queue.length') > this._queued;
     const filesDropped = get(this, 'queue.length') === this._queued;
@@ -229,7 +229,7 @@ export default Ember.Component.extend({
       this.deactivateDropzone();
     }
     this._queued = get(this, 'queue.length');
-    Ember.run.scheduleOnce('afterRender', this, 'refreshQueue');
+    scheduleOnce('afterRender', this, 'refreshQueue');
   }),
 
   refreshQueue() {
@@ -240,7 +240,7 @@ export default Ember.Component.extend({
     }
   },
 
-  setDragDataValidity: Ember.observer('dragData', Ember.on('init', function () {
+  setDragDataValidity: observer('dragData', on('init', function () {
     if (!isDragAndDropSupported(get(this, 'runtimes'))) { return; }
 
     var data = get(this, 'dragData');

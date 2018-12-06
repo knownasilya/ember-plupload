@@ -1,18 +1,23 @@
 /* globals plupload, moxie */
-import Ember from 'ember';
+import { reject } from 'rsvp';
+
+import $ from 'jquery';
+import { assert } from '@ember/debug';
+import ArrayProxy from '@ember/array/proxy';
+import { A } from '@ember/array';
+import { bind, later, debounce } from '@ember/runloop';
+import { bool } from '@ember/object/computed';
+import { copy } from '@ember/object/internals';
+import { merge } from '@ember/polyfills';
+import { set, get, computed } from '@ember/object';
 import File from './file';
 import trim from './trim';
 import sumBy from '../system/sum-by';
 
-const { get, set } = Ember;
-const { copy, merge } = Ember;
-const computed = Ember.computed;
-const bool = Ember.computed.bool;
-const bind = Ember.run.bind;
 const keys = Object.keys;
 
 var getHeader = function (headers, header) {
-  let headerKeys = Ember.A(keys(headers));
+  let headerKeys = A(keys(headers));
   let headerIdx = headerKeys.map((s) => s.toLowerCase()).indexOf(header.toLowerCase());
   if (headerIdx !== -1) {
     return headers[headerKeys[headerIdx]];
@@ -26,7 +31,7 @@ var getHeader = function (headers, header) {
   @class UploadQueue
   @extend Ember.ArrayProxy
  */
-export default Ember.ArrayProxy.extend({
+export default ArrayProxy.extend({
 
   name: null,
 
@@ -35,16 +40,16 @@ export default Ember.ArrayProxy.extend({
   queues: null,
 
   init() {
-    set(this, 'queues', Ember.A([]));
-    set(this, 'orphanedQueues', Ember.A([]));
+    set(this, 'queues', A([]));
+    set(this, 'orphanedQueues', A([]));
 
-    set(this, 'content', Ember.A([]));
+    set(this, 'content', A([]));
     this._super();
   },
 
   configure(config = {}) {
     if (config.browse_button) {
-      Ember.assert(`An element with the id "${config.browse_button}" is needed to match the uploader\'s for attribute.`, document.getElementById(config.browse_button));
+      assert(`An element with the id "${config.browse_button}" is needed to match the uploader\'s for attribute.`, document.getElementById(config.browse_button));
     }
 
     var uploader = new plupload.Uploader(config);
@@ -96,7 +101,7 @@ export default Ember.ArrayProxy.extend({
     var activeQueues = get(this, 'queues').filter(function (queue) {
       return orphans.indexOf(queue) === -1;
     });
-    var freshestQueue = get(Ember.A(activeQueues), 'lastObject');
+    var freshestQueue = get(A(activeQueues), 'lastObject');
     if (get(freshestQueue, 'total.queued') > 0) {
       orphans.pushObject(freshestQueue);
     } else {
@@ -107,7 +112,7 @@ export default Ember.ArrayProxy.extend({
   destroy() {
     this._super();
     get(this, 'queues').invoke('unbindAll');
-    set(this, 'content', Ember.A([]));
+    set(this, 'content', A([]));
     set(this, 'queues', null);
   },
 
@@ -187,7 +192,7 @@ export default Ember.ArrayProxy.extend({
 
   parseResponse(response) {
     var body = trim(response.response);
-    var rawHeaders = Ember.A(response.responseHeaders.split(/\n|\r/)).without('');
+    var rawHeaders = A(response.responseHeaders.split(/\n|\r/)).without('');
     var headers = rawHeaders.reduce(function (E, header) {
       var parts = header.split(/^([0-9A-Za-z_-]*:)/);
       if (parts.length > 0){
@@ -199,13 +204,13 @@ export default Ember.ArrayProxy.extend({
     let contentType = (getHeader(headers, 'Content-Type') || '').split(';');
     // Parse body according to the Content-Type received by the server
     if (contentType.indexOf('text/html') !== -1) {
-      body = Ember.$.parseHTML(body);
+      body = $.parseHTML(body);
     } else if (contentType.indexOf('text/xml') !== -1) {
-      body = Ember.$.parseXML(body);
+      body = $.parseXML(body);
     } else if (contentType.indexOf('application/json') !== -1 ||
                contentType.indexOf('text/javascript') !== -1 ||
                contentType.indexOf('application/javascript') !== -1) {
-      body = Ember.$.parseJSON(body);
+      body = $.parseJSON(body);
     }
 
     return {
@@ -232,7 +237,7 @@ export default Ember.ArrayProxy.extend({
 
     // Notify plupload that our browse_button may have
     // changed locations
-    Ember.run.later(uploader, 'refresh', 750);
+    later(uploader, 'refresh', 750);
   },
 
   garbageCollectUploader(uploader) {
@@ -245,7 +250,7 @@ export default Ember.ArrayProxy.extend({
   uploadComplete(uploader) {
     // Notify plupload that our browse_button may have
     // changed locations
-    Ember.run.later(uploader, 'refresh', 750);
+    later(uploader, 'refresh', 750);
     this.notifyPropertyChange('loaded');
     this.notifyPropertyChange('size');
 
@@ -275,8 +280,8 @@ export default Ember.ArrayProxy.extend({
       // the queued event
       } else {
         file.upload = file.read = function () {
-          Ember.run.debounce(uploader, 'refresh', 750);
-          return Ember.RSVP.reject(error, `File: '${error.file.id}' ${error.message}`);
+          debounce(uploader, 'refresh', 750);
+          return reject(error, `File: '${error.file.id}' ${error.message}`);
         };
         if (file) {
           file.destroy();
@@ -289,7 +294,7 @@ export default Ember.ArrayProxy.extend({
         });
       }
       this.notifyPropertyChange('length');
-      Ember.run.debounce(uploader, 'refresh', 750);
+      debounce(uploader, 'refresh', 750);
     } else {
       set(this, 'error', error);
       get(this, 'target').sendAction('onerror', error);
