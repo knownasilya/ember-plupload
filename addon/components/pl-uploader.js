@@ -135,10 +135,11 @@ export default Component.extend({
     }
   }),
 
-  didInsertElement: on('didInsertElement', function() {
+  didInsertElement() {
+    this._super(...arguments);
     scheduleOnce('afterRender', this, 'attachUploader');
     scheduleOnce('afterRender', this, 'setupDragListeners');
-  }),
+  },
 
   attachUploader() {
     let uploader = get(this, 'uploader');
