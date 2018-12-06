@@ -38,12 +38,9 @@ export default Component.extend({
   classNames: ['pl-uploader'],
 
   name: null,
-
   'for-dropzone': null,
-
   onfileadd: null,
   onerror: null,
-
   uploader: service(),
 
   /**
@@ -173,33 +170,43 @@ export default Component.extend({
     }
   },
 
-  detachUploader: on('willDestroyElement', function () {
-    var queue = get(this, 'queue');
+  willDestroyElement() {
+    this.detachUploader();
+    this.teardownDragListeners();
+  },
+
+  detachUploader() {
+    let queue = get(this, 'queue');
+
     if (queue) {
       queue.orphan();
       set(this, 'queue', null);
     }
+
     let sheet = sharedStyleSheet();
+
     sheet.css(`#${get(this, 'dropzone.id')} *`, null);
     sheet.applyStyles();
-  }),
+  },
 
-  teardownDragListeners: on('willDestroyElement', function () {
-    var dropzoneId = get(this, 'dropzone.id');
+  teardownDragListeners() {
+    let dropzoneId = get(this, 'dropzone.id');
+
     if (dropzoneId) {
-      var handlers = this.eventHandlers;
+      let handlers = this.eventHandlers;
+
       keys(handlers).forEach(function (key) {
         $(document).off(key, '#' + dropzoneId, handlers[key]);
       });
       this.eventHandlers = null;
     }
-  }),
+  },
 
   dragData: null,
   enteredDropzone({ originalEvent: evt }) {
     if (this._dragInProgress === false) {
-        this._dragInProgress = true;
-        this.activateDropzone(evt);
+      this._dragInProgress = true;
+      this.activateDropzone(evt);
     }
   },
 
@@ -212,15 +219,18 @@ export default Component.extend({
 
   activateDropzone(evt) {
     let sheet = sharedStyleSheet();
+
     sheet.css(`#${get(this, 'dropzone.id')} *`, {
       pointerEvents: 'none'
     });
+
     scheduleOnce('render', sheet, 'applyStyles');
     set(this, 'dragData', get(evt, 'dataTransfer'));
   },
 
   deactivateDropzone() {
     let sheet = sharedStyleSheet();
+
     sheet.css(`#${get(this, 'dropzone.id')} *`, null);
     scheduleOnce('render', sheet, 'applyStyles');
 
@@ -232,15 +242,17 @@ export default Component.extend({
     // Looks like someone dropped a file
     const filesAdded = get(this, 'queue.length') > this._queued;
     const filesDropped = get(this, 'queue.length') === this._queued;
+
     if ((filesAdded || filesDropped) && get(this, 'dragData')) {
       this.deactivateDropzone();
     }
+
     this._queued = get(this, 'queue.length');
     scheduleOnce('afterRender', this, 'refreshQueue');
   }),
 
   refreshQueue() {
-    var queue = this.get('queue');
+    let queue = this.get('queue');
 
     if (queue) {
       queue.refresh();
@@ -248,16 +260,18 @@ export default Component.extend({
   },
 
   setDragDataValidity: observer('dragData', on('init', function () {
-    if (!isDragAndDropSupported(get(this, 'runtimes'))) { return; }
+    if (!isDragAndDropSupported(get(this, 'runtimes'))) {
+      return;
+    }
 
-    var data = get(this, 'dragData');
-    var extensions = get(this, 'extensions');
-    var isValid = true;
+    let data = get(this, 'dragData');
+    let extensions = get(this, 'extensions');
+    let isValid = true;
 
     // Validate
     if (extensions.length) {
       isValid = slice.call(get(data || {}, 'items') || []).every(function (item) {
-        var fileType = trim(item.type).toLowerCase();
+        let fileType = trim(item.type).toLowerCase();
         return extensions.any(function (ext) {
           return (new RegExp(ext + '$')).test(fileType);
         });
