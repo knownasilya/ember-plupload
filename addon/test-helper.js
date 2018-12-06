@@ -1,4 +1,4 @@
-/* global mOxie */
+/* global moxie */
 import Ember from 'ember';
 
 function FakeFile(attrs) {
@@ -52,8 +52,8 @@ FakeFile.prototype = {
   }
 };
 
-mOxie.FileReader = function () {};
-mOxie.FileReader.prototype = {
+moxie.file.FileReader = function () {};
+moxie.file.FileReader.prototype = {
   read(type, source) {
     Ember.assert(`"${source.name}" doesn't have a ${type} for the file to read
 When calling addFiles(), provide the following property:

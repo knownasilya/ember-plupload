@@ -1,4 +1,4 @@
-/* globals plupload, mOxie */
+/* globals plupload, moxie */
 import Ember from 'ember';
 import File from './file';
 import trim from './trim';
@@ -61,7 +61,7 @@ export default Ember.ArrayProxy.extend({
     get(this, 'queues').pushObject(uploader);
 
     // Set browse_button and drop_element as
-    // references to the buttons so mOxie doesn't
+    // references to the buttons so moxie doesn't
     // get confused when the dom might be detached
     uploader.settings.browse_button = [config.browse_button];
     if (config.drop_element) {
@@ -79,7 +79,7 @@ export default Ember.ArrayProxy.extend({
   runtimeDidChange() {
     let $input = get(this, 'target').$('.moxie-shim input');
     let ruid = $input.attr('id');
-    let I = mOxie.Runtime.getInfo(ruid);
+    let I = moxie.runtime.Runtime.getInfo(ruid);
 
     // Polyfill mobile support
     if (!I.can('summon_file_dialog')) {
