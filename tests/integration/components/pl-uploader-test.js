@@ -1,7 +1,8 @@
 import { reject, resolve } from 'rsvp';
+import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import { addFiles } from 'ember-plupload/test-helper';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -134,6 +135,63 @@ module('pl-uploader', function(hooks) {
       >
         <div id='upload-image'>Upload Image</div>
       </PlUploader>
+    `);
+  });
+
+  test('configures the plupload Uploader correctly', async function(assert) {
+    let settings = {
+      url: true,
+      runtimes: 'html5,html4,flash,silverlight',
+      browse_button: ['browse-button'],
+      container: 'test',
+      flash_swf_url: '/assets/Moxie.swf',
+      silverlight_xap_url: '/assets/Moxie.xap',
+      http_method: 'POST',
+      max_retries: 0,
+      multipart: true,
+      required_features: {
+        select_file: true
+      },
+      resize: false,
+      unique_names: false,
+      multi_selection: true,
+      send_file_name: true,
+      send_chunk_number: true,
+      file_data_name: 'file',
+      chunk_size: 0,
+      filters: {
+        mime_types: [{
+          extensions: 'jpg,png,gif'
+        }],
+        max_file_size: 256,
+        prevent_duplicates: true,
+        prevent_empty: true
+      }
+    };
+
+    this.setProperties({
+      uploadIt() {},
+      onInit(pl, queue, comp) {
+        settings.container = this.element.children[0];
+        if (get(comp, 'dropzone.enabled')) {
+          settings.drop_element = ['dropzone-for-test'];
+        }
+        assert.deepEqual(pl.settings, settings);
+      }
+    });
+
+    await render(hbs`
+      <PlUploader
+        @elementId='test'
+        @name='uploader'
+        @for='browse-button'
+        @extensions='JPG PNG GIF'
+        @max-file-size={{256}}
+        @no-duplicates={{true}}
+        @send-file-name={{true}}
+        @onInitOfUploader={{action this.onInit}}
+        @onfileadd={{action this.uploadIt}}
+      />
     `);
   });
 });

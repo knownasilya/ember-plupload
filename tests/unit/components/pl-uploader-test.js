@@ -21,50 +21,6 @@ module('pl-uploader', function(hooks) {
     plupload.Uploader = originalPlupload;
   });
 
-  test('it configures the plupload Uploader correctly', function (assert) {
-    var component = this.owner.factoryFor('component:pl-uploader').create({
-      for: 'browse-button',
-      onfileadd: 'uploadImage',
-      extensions: 'JPG PNG GIF',
-      'max-file-size': 256,
-      'no-duplicates': true,
-      'send-file-name': true,
-      uploader: Uploader.create()
-    });
-
-    this.render();
-
-    var uploader = get(component, 'queue.queues.firstObject');
-    var elementId = get(component, 'elementId');
-
-    assert.ok(uploader.initialized);
-    var settings = {
-      url: true,
-      runtimes: 'html5,html4,flash,silverlight',
-      browse_button: ['browse-button'],
-      container: elementId,
-      flash_swf_url: '/assets/Moxie.swf',
-      silverlight_xap_url: '/assets/Moxie.xap',
-      unique_names: false,
-      multi_selection: true,
-      required_features: {},
-      send_file_name: true,
-      filters: {
-        mime_types: [{
-          extensions: 'jpg,png,gif'
-        }],
-        max_file_size: 256,
-        prevent_duplicates: true
-      }
-    };
-
-    if (get(component, 'dropzone.enabled')) {
-      settings.drop_element = ['dropzone-for-' + elementId];
-    }
-
-    assert.deepEqual(uploader.settings, settings);
-  });
-
   test('when html5 is not a runtime, drop_element is not included', function (assert) {
     var component = this.owner.factoryFor('component:pl-uploader').create({
       for: 'browse-button',

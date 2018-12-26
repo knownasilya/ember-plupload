@@ -149,7 +149,7 @@ export default Component.extend({
     let pluploader = queue.get('queues.firstObject');
 
     if (this.onInitOfUploader) {
-      this.onInitOfUploader(pluploader, queue);
+      this.onInitOfUploader(pluploader, queue, this);
     }
 
     this._dragInProgress = false;
