@@ -1,5 +1,4 @@
 import { A } from '@ember/array';
-import EmberMap from '@ember/map';
 import Service from '@ember/service';
 import { get, set, computed } from '@ember/object';
 import UploadQueue from '../system/upload-queue';
@@ -13,7 +12,7 @@ export default Service.extend({
     accessed by name via the `find` method.
    */
   init() {
-    set(this, 'queues', EmberMap.create());
+    set(this, 'queues', new Map());
     set(this, 'all', A());
   },
 

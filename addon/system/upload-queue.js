@@ -7,7 +7,7 @@ import ArrayProxy from '@ember/array/proxy';
 import { A } from '@ember/array';
 import { bind, later, debounce } from '@ember/runloop';
 import { bool } from '@ember/object/computed';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import { merge } from '@ember/polyfills';
 import { set, get, computed } from '@ember/object';
 import File from './file';
@@ -84,7 +84,7 @@ export default ArrayProxy.extend({
     let I = moxie.runtime.Runtime.getInfo(ruid);
 
     // Polyfill mobile support
-    if (!I.can('summon_file_dialog')) {
+    if (I && !I.can('summon_file_dialog')) {
       $input.attr('capture', 'camera');
     }
   },

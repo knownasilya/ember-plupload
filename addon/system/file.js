@@ -1,5 +1,5 @@
 /* global moxie, plupload */
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 
 import EmberArray, { A } from '@ember/array';
 import { alias, reads } from '@ember/object/computed';
