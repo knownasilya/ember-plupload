@@ -59,8 +59,12 @@ The cleanest approach to configure uploaders is to create a component that encap
 For example, creating an image uploader that uploads images to your API server would look like:
 
 ```handlebars
-{{#pl-uploader for="upload-image" extensions="jpg jpeg png gif" onfileadd="uploadImage" as |queue dropzone|}}
-  <div class="dropzone" id={{dropzone.id}}>
+{{#pl-uploader
+  for='upload-image'
+  extensions='jpg jpeg png gif'
+  onfileadd=(action 'uploadImage')
+as |queue dropzone|}}
+  <div class='dropzone' id={{dropzone.id}}>
     {{#if dropzone.active}}
       {{#if dropzone.valid}}
         Drop to upload
@@ -75,7 +79,7 @@ For example, creating an image uploader that uploads images to your API server w
         {{#if dropzone.enabled}}
           Drag and drop images onto this area to upload them or
         {{/if}}
-        <a id="upload-image">Add an Image.</a>
+        <a id='upload-image'>Add an Image.</a>
       </p>
     {{/if}}
   </div>
