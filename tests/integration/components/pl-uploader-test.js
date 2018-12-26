@@ -194,4 +194,60 @@ module('pl-uploader', function(hooks) {
       />
     `);
   });
+
+  test('when html5 is not a runtime, drop_element is not included', async function(assert) {
+    let settings = {
+      url: true,
+      runtimes: 'html4,flash',
+      browse_button: ['browse-button'],
+      container: 'test',
+      flash_swf_url: '/assets/Moxie.swf',
+      silverlight_xap_url: '/assets/Moxie.xap',
+      http_method: 'POST',
+      max_retries: 0,
+      multipart: true,
+      required_features: {
+        select_file: true
+      },
+      resize: false,
+      unique_names: false,
+      multi_selection: true,
+      send_file_name: false,
+      send_chunk_number: true,
+      file_data_name: 'file',
+      chunk_size: 0,
+      filters: {
+        mime_types: [{
+          extensions: 'jpg,png,gif'
+        }],
+        max_file_size: 256,
+        prevent_duplicates: true,
+        prevent_empty: true
+      }
+    };
+
+    this.setProperties({
+      uploadIt() {},
+      onInit(pl) {
+        settings.container = this.element.children[0];
+        assert.deepEqual(pl.settings, settings);
+      }
+    });
+
+    await render(hbs`
+      <PlUploader
+        @elementId='test'
+        @name='uploader'
+        @for='browse-button'
+        @extensions='JPG PNG GIF'
+        @runtimes='html4 flash'
+        @max-file-size={{256}}
+        @no-duplicates={{true}}
+        @send-file-name={{false}}
+        @onInitOfUploader={{action this.onInit}}
+        @onfileadd={{action this.uploadIt}}
+      />
+    `);
+    debugger;
+  });
 });

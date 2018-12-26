@@ -21,45 +21,6 @@ module('pl-uploader', function(hooks) {
     plupload.Uploader = originalPlupload;
   });
 
-  test('when html5 is not a runtime, drop_element is not included', function (assert) {
-    var component = this.owner.factoryFor('component:pl-uploader').create({
-      for: 'browse-button',
-      onfileadd: 'uploadImage',
-      extensions: 'JPG PNG GIF',
-      'max-file-size': 256,
-      'no-duplicates': true,
-      'send-file-name': false,
-      uploader: Uploader.create(),
-      runtimes: 'html4 flash'
-    });
-
-    this.render();
-
-    var uploader = get(component, 'queue.queues.firstObject');
-    var elementId = get(component, 'elementId');
-
-    assert.ok(uploader.initialized);
-    assert.deepEqual(uploader.settings, {
-      url: true,
-      runtimes: 'html4,flash',
-      browse_button: ['browse-button'],
-      container: elementId,
-      flash_swf_url: '/assets/Moxie.swf',
-      silverlight_xap_url: '/assets/Moxie.xap',
-      unique_names: false,
-      multi_selection: true,
-      required_features: {},
-      send_file_name: false,
-      filters: {
-        mime_types: [{
-          extensions: 'jpg,png,gif'
-        }],
-        max_file_size: 256,
-        prevent_duplicates: true
-      }
-    });
-  });
-
   test('sends an event when the file is queued', function (assert) {
     assert.expect(7);
     var component = this.owner.factoryFor('component:pl-uploader').create({
