@@ -1,3 +1,4 @@
+/* global plupload */
 import { reject, resolve } from 'rsvp';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
@@ -5,9 +6,14 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { addFiles } from 'ember-plupload/test-helper';
 import hbs from 'htmlbars-inline-precompile';
+import { A } from "@ember/array"
 
 module('pl-uploader', function(hooks) {
   setupRenderingTest(hooks);
+
+  hooks.beforeEach(function () {
+    this.uploaderService = this.owner.lookup('service:uploader');
+  });
 
   test('addFiles test helper integration', async function(assert) {
     let file;
@@ -248,6 +254,41 @@ module('pl-uploader', function(hooks) {
         @onfileadd={{action this.uploadIt}}
       />
     `);
-    debugger;
   });
+
+  test('sends an event when the file is queued', async function (assert) {
+
+    this.setProperties({
+      onInit(pl, queue) {
+        addFiles(queue, {
+          name: 'Cat Eating Watermelon.png',
+          size: 2048,
+          id: 'test-file',
+          progress: 0
+        });
+      },
+      uploadImage(file, env) {
+        assert.equal(get(file, 'id'), 'test-file');
+        assert.equal(get(file, 'name'), 'Cat Eating Watermelon.png');
+        assert.equal(get(file, 'size'), 2048);
+        assert.equal(get(file, 'progress'), 0);
+        assert.equal(env.name, 'uploader');
+        // TODO: Don't really know how to test this
+        // assert.equal(env.uploader, uploader);
+        assert.ok(!env.uploader.started);
+      }
+    });
+
+    await render(hbs`
+      <PlUploader
+        @name='uploader'
+        @for='upload-image'
+        @onInitOfUploader={{action this.onInit}}
+        @onfileadd={{action this.uploadImage}}
+      >
+        <div id='upload-image'>Upload Image</div>
+      </PlUploader>
+    `);
+  });
+
 });
