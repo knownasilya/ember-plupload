@@ -2,7 +2,7 @@
 import { A } from '@ember/array';
 
 import { get, set } from '@ember/object';
-import { module, test, skip } from 'qunit';
+import { module, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Uploader from 'ember-plupload/services/uploader';
 import MockUploader from '../../helpers/mock-uploader';
