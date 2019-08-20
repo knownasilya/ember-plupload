@@ -2,15 +2,16 @@ import Controller from '@ember/controller';
 import { A } from "@ember/array"
 
 export default Controller.extend({
+  events: null,
   actions: {
     uploadImage(file) {
-      if (this.get('events') == null) {
+      if (this.events == null) {
         this.set('events', A([]));
       }
 
-      let filename = file.get('name');
+      let filename = file.name;
       file.read().then((url) => {
-        this.get('events').pushObject({
+        this.events.pushObject({
           filename: filename,
           preview: url
         });
