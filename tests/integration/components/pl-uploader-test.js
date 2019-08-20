@@ -1,12 +1,11 @@
 /* global plupload */
 import { reject, resolve } from 'rsvp';
 import { get } from '@ember/object';
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { addFiles } from 'ember-plupload/test-helper';
 import hbs from 'htmlbars-inline-precompile';
-import { A } from "@ember/array"
 
 module('pl-uploader', function(hooks) {
   setupRenderingTest(hooks);
