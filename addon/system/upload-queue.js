@@ -8,7 +8,7 @@ import { A } from '@ember/array';
 import { bind, later, debounce } from '@ember/runloop';
 import { bool } from '@ember/object/computed';
 import { copy } from 'ember-copy';
-import { merge } from '@ember/polyfills';
+import { assign } from '@ember/polyfills';
 import { set, get, computed } from '@ember/object';
 import File from './file';
 import trim from './trim';
@@ -172,7 +172,7 @@ export default ArrayProxy.extend({
     file = this.findBy('id', file.id);
     // Reset settings for merging
     uploader.settings = copy(get(this, 'settings'));
-    merge(uploader.settings, file.settings);
+    assign(uploader.settings, file.settings);
 
     this.progressDidChange(uploader, file);
   },
