@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import jQuery from 'jquery';
 import { on } from '@ember/object/evented';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
@@ -165,7 +165,7 @@ export default Component.extend({
       };
 
       keys(handlers).forEach(function (key) {
-        $(document).on(key, '#' + dropzoneId, handlers[key]);
+        jQuery(document).on(key, '#' + dropzoneId, handlers[key]);
       });
     }
   },
@@ -196,7 +196,7 @@ export default Component.extend({
       let handlers = this.eventHandlers;
 
       keys(handlers).forEach(function (key) {
-        $(document).off(key, '#' + dropzoneId, handlers[key]);
+        jQuery(document).off(key, '#' + dropzoneId, handlers[key]);
       });
       this.eventHandlers = null;
     }

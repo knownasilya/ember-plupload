@@ -1,5 +1,5 @@
 import { A } from '@ember/array';
-import $ from 'jquery';
+import jQuery from 'jquery';
 import { scheduleOnce, bind, next } from '@ember/runloop';
 import { on } from '@ember/object/evented';
 import Component from '@ember/component';
@@ -37,7 +37,7 @@ export default Component.extend({
 
   updateStyles: observer('tokenList.tokens.@each.active', function () {
     get(this, 'tokenList.tokens').forEach((token) => {
-      let $el = this.$(`#title-${token.id}`);
+      let $el = jQuery(`#title-${token.id}`);
       if (!$el) { return; }
       if (token.active) {
         $el.addClass('active');
@@ -50,12 +50,12 @@ export default Component.extend({
   didInsertElement() {
     this._activate = bind(this, this.activate);
     next(() => {
-      this.$().on('click', '.title-token', this._activate);
+      jQuery(this.element).on('click', '.title-token', this._activate);
     });
   },
 
   willDestroyElement() {
-    this.$().off('click', '.title-token', this._activate);
+    jQuery(this.element).off('click', '.title-token', this._activate);
   },
 
   activate(evt) {

@@ -1,7 +1,7 @@
 /* globals plupload, moxie */
 import { reject } from 'rsvp';
 
-import $ from 'jquery';
+import jQuery from 'jquery';
 import { assert } from '@ember/debug';
 import ArrayProxy from '@ember/array/proxy';
 import { A } from '@ember/array';
@@ -201,13 +201,13 @@ export default ArrayProxy.extend({
     let contentType = (getHeader(headers, 'Content-Type') || '').split(';');
     // Parse body according to the Content-Type received by the server
     if (contentType.indexOf('text/html') !== -1) {
-      body = $.parseHTML(body);
+      body = jQuery.parseHTML(body);
     } else if (contentType.indexOf('text/xml') !== -1) {
-      body = $.parseXML(body);
+      body = jQuery.parseXML(body);
     } else if (contentType.indexOf('application/json') !== -1 ||
                contentType.indexOf('text/javascript') !== -1 ||
                contentType.indexOf('application/javascript') !== -1) {
-      body = $.parseJSON(body);
+      body = jQuery.parseJSON(body);
     }
 
     return {

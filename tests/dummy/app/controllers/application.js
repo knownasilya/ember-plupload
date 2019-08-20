@@ -1,4 +1,5 @@
 import Controller from '@ember/controller';
+import { A } from "@ember/array"
 
 export default Controller.extend({
   actions: {
@@ -8,7 +9,7 @@ export default Controller.extend({
       }
 
       let filename = file.get('name');
-      file.read().then(function (url) {
+      file.read().then((url) => {
         this.get('events').pushObject({
           filename: filename,
           preview: url
