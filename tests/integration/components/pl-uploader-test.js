@@ -17,24 +17,21 @@ module('pl-uploader', function(hooks) {
 
   test('addFiles test helper integration', async function(assert) {
     let file;
-
-    this.setProperties({
-      uploadIt(file)  {
-        file.upload();
-      },
-      onInit(pl, queue) {
-        [file] = addFiles(queue, {
-          name: 'Cat Eating Watermelon.png',
-          size: 2048
-        });
-      }
-    });
+    this.set('uploadIt', (file) => {
+      file.upload();
+    })
+    this.set('onInit', (pl, queue) => {
+      [file] = addFiles(queue, {
+        name: 'Cat Eating Watermelon.png',
+        size: 2048
+      });
+    })
 
     await render(hbs`
       <PlUploader
         @name='uploader'
-        @onfileadd={{action this.uploadIt}}
-        @onInitOfUploader={{action this.onInit}}
+        @onfileadd={{action uploadIt}}
+        @onInitOfUploader={{action onInit}}
         @for='upload-image'
       as |queue|>
         <div id="file-count">{{queue.length}}</div>
@@ -43,14 +40,14 @@ module('pl-uploader', function(hooks) {
       </PlUploader>
     `);
 
-    assert.dom('#file-count').hasText('1');
-    assert.dom('#file-progress').hasText('0');
+    assert.dom('#file-count').hasText('1', 'Should have 1 file');
+    assert.dom('#file-progress').hasText('0', 'Progress is 0');
 
     file.progress = 80;
-    assert.dom('#file-progress').hasText('80');
+    assert.dom('#file-progress').hasText('80', 'Progress should have updated to 80');
 
     file.respondWith(200, { 'Content-Type': 'application/json' }, {});
-    assert.dom('#file-count').hasText('0');
+    assert.dom('#file-count').hasText('0', 'Should have 0 files after');
   });
 
   test('errors with read()', async function(assert) {

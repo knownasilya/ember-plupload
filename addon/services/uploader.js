@@ -55,8 +55,9 @@ export default Service.extend({
   findOrCreate(name, component, config) {
     var queue;
 
-    if (get(this, 'queues').has(name)) {
-      queue = get(this, 'queues').get(name);
+    let queues = get(this, 'queues');
+    if (queues.has(name)) {
+      queue = queues.get(name);
       if (config != null) {
         set(queue, 'target', component);
         queue.configure(config);
@@ -67,7 +68,7 @@ export default Service.extend({
         target: component
       });
       get(this, 'all').pushObject(queue);
-      get(this, 'queues').set(name, queue);
+      queues.set(name, queue);
       queue.configure(config);
     }
     return queue;

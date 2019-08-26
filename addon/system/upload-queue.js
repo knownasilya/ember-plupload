@@ -1,14 +1,14 @@
 /* globals plupload, moxie */
 import { reject } from 'rsvp';
 
-import $ from 'jquery';
+import jQuery from 'jquery';
 import { assert } from '@ember/debug';
 import ArrayProxy from '@ember/array/proxy';
 import { A } from '@ember/array';
 import { bind, later, debounce } from '@ember/runloop';
 import { bool } from '@ember/object/computed';
 import { copy } from 'ember-copy';
-import { merge } from '@ember/polyfills';
+import { assign } from '@ember/polyfills';
 import { set, get, computed } from '@ember/object';
 import File from './file';
 import trim from './trim';
@@ -172,7 +172,7 @@ export default ArrayProxy.extend({
     file = this.findBy('id', file.id);
     // Reset settings for merging
     uploader.settings = copy(get(this, 'settings'));
-    merge(uploader.settings, file.settings);
+    assign(uploader.settings, file.settings);
 
     this.progressDidChange(uploader, file);
   },
@@ -201,13 +201,13 @@ export default ArrayProxy.extend({
     let contentType = (getHeader(headers, 'Content-Type') || '').split(';');
     // Parse body according to the Content-Type received by the server
     if (contentType.indexOf('text/html') !== -1) {
-      body = $.parseHTML(body);
+      body = jQuery.parseHTML(body);
     } else if (contentType.indexOf('text/xml') !== -1) {
-      body = $.parseXML(body);
+      body = jQuery.parseXML(body);
     } else if (contentType.indexOf('application/json') !== -1 ||
                contentType.indexOf('text/javascript') !== -1 ||
                contentType.indexOf('application/javascript') !== -1) {
-      body = $.parseJSON(body);
+      body = jQuery.parseJSON(body);
     }
 
     return {

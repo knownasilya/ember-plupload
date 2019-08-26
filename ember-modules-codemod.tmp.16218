@@ -1,1 +1,0 @@
-[2,"View",3,"tests/dummy/app/views/index.js","import Ember from 'ember';\n\nexport default Ember.View.extend({\n  elementId: 'index'\n});"]

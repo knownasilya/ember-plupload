@@ -1,1 +1,0 @@
-[2,"generateGuid",5,"addon/test-helper.js","\nfunction FakeFile(attrs) {\n  this.id = Ember.generateGuid();\n  attrs.plupload.total.size += attrs.size;\n  Ember.merge(this, attrs);"]

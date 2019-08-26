@@ -1,6 +1,6 @@
 import { A } from '@ember/array';
 import { scheduleOnce } from '@ember/runloop';
-import { merge } from '@ember/polyfills';
+import { assign } from '@ember/polyfills';
 import Component from '@ember/component';
 import { set, get, observer } from '@ember/object';
 
@@ -14,7 +14,7 @@ export default Component.extend({
   },
 
   updateToken(diff={}) {
-    let token = merge({
+    let token = assign({
       id: get(this, 'elementId'),
       title: get(this, 'title') || ' ',
       replace: get(this, 'replace'),

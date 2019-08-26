@@ -1,14 +1,13 @@
 /* global moxie */
 import { assert } from '@ember/debug';
-
 import { run } from '@ember/runloop';
-import { merge } from '@ember/polyfills';
+import { assign } from '@ember/polyfills';
 import Ember from 'ember';
 
 function FakeFile(attrs) {
   this.id = Ember.generateGuid();
   attrs.plupload.total.size += attrs.size;
-  merge(this, attrs);
+  assign(this, attrs);
 }
 
 FakeFile.prototype = {
@@ -94,11 +93,19 @@ addFiles(this.container, "${source.queueName}", {
 };
 
 export function addFiles(queue, ...files) {
-  let plupload = queue.get('queues.lastObject');
-  let name = queue.name;
+  let queueMap = queue.get('queues');
+  let finalQueue = null;
+  for (let queue of queueMap.values()) {
+    finalQueue = queue;
+  }
+  if (finalQueue === null) {
+    throw new Error(`Queue does not exist`);
+  }
+  let plupload = finalQueue;
+  let name = finalQueue.name;
 
   files = files.map(function (file) {
-    return new FakeFile(merge({ queue, plupload, queueName: name }, file));
+    return new FakeFile(assign({ queue, plupload, queueName: name }, file));
   });
 
   run(function () {
