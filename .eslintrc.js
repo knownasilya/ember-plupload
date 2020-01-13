@@ -9,5 +9,8 @@ module.exports = {
     browser: true
   },
   rules: {
+  },
+  globals: {
+    Map: true
   }
 };

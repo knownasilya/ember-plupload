@@ -14,7 +14,7 @@ export default Ember.Service.extend({
     accessed by name via the `find` method.
    */
   init() {
-    set(this, 'queues', Ember.Map.create());
+    set(this, 'queues',new Map());
     set(this, 'all', Ember.A());
   },
 
