@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import DinoSheet from 'dinosheets';
 import trim from '../system/trim';
 import w from '../computed/w';
 
@@ -23,14 +22,6 @@ var isDragAndDropSupported = (function () {
     return supported;
   };
 }());
-
-var styleSheet;
-var sharedStyleSheet = function () {
-  if (styleSheet == null) {
-    styleSheet = new DinoSheet();
-  }
-  return styleSheet;
-};
 
 var slice = Array.prototype.slice;
 
@@ -148,7 +139,7 @@ export default Ember.Component.extend({
     // Send up the pluploader object so the app implementing this component as has access to it
     var pluploader = queue.get('queues.firstObject');
     this.sendAction('onInitOfUploader', pluploader);
-    this._dragInProgress = false;
+    this._dragCounter = 0;
     this._invalidateDragData();
   },
 
@@ -162,6 +153,7 @@ export default Ember.Component.extend({
 
       keys(handlers).forEach(function (key) {
         Ember.$(document).on(key, '#' + dropzoneId, handlers[key]);
+        Ember.$(document).on(key, '.moxie-shim', handlers[key]);
       });
     }
   },
@@ -172,9 +164,6 @@ export default Ember.Component.extend({
       queue.orphan();
       set(this, 'queue', null);
     }
-    let sheet = sharedStyleSheet();
-    sheet.css(`#${get(this, 'dropzone.id')} *`, null);
-    sheet.applyStyles();
   }),
 
   teardownDragListeners: Ember.on('willDestroyElement', function () {
@@ -183,41 +172,39 @@ export default Ember.Component.extend({
       var handlers = this.eventHandlers;
       keys(handlers).forEach(function (key) {
         Ember.$(document).off(key, '#' + dropzoneId, handlers[key]);
+        Ember.$(document).off(key, '.moxie-shim', handlers[key]);
       });
       this.eventHandlers = null;
     }
   }),
 
   dragData: null,
-  enteredDropzone({ originalEvent: evt }) {
-    if (this._dragInProgress === false) {
-        this._dragInProgress = true;
-        this.activateDropzone(evt);
+  enteredDropzone(evt) {
+    var e = evt.originalEvent;
+    if (e.preventDefault) { e.preventDefault(); }
+    if (e.stopPropagation) { e.stopPropagation(); }
+    if (this._dragCounter === 0) {
+        this.activateDropzone(evt.originalEvent);
     }
+    this._dragCounter++;
   },
 
-  leftDropzone() {
-    if (this._dragInProgress === true) {
-      this._dragInProgress = false;
+  leftDropzone(evt) {
+    var e = evt.originalEvent;
+    if (e.preventDefault) { e.preventDefault(); }
+    if (e.stopPropagation) { e.stopPropagation(); }
+    this._dragCounter--;
+    if (this._dragCounter === 0) {
       this.deactivateDropzone();
     }
   },
 
   activateDropzone(evt) {
-    let sheet = sharedStyleSheet();
-    sheet.css(`#${get(this, 'dropzone.id')} *`, {
-      pointerEvents: 'none'
-    });
-    Ember.run.scheduleOnce('render', sheet, 'applyStyles');
     set(this, 'dragData', get(evt, 'dataTransfer'));
   },
 
   deactivateDropzone() {
-    let sheet = sharedStyleSheet();
-    sheet.css(`#${get(this, 'dropzone.id')} *`, null);
-    Ember.run.scheduleOnce('render', sheet, 'applyStyles');
-
-    this._dragInProgress = false;
+    this._dragCounter = 0;
     set(this, 'dragData', null);
   },
 
