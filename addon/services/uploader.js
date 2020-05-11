@@ -1,12 +1,10 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import Service from '@ember/service';
+import { get, set, computed } from '@ember/object';
 import UploadQueue from '../system/upload-queue';
 import flatten from '../system/flatten';
 
-var get = Ember.get;
-var set = Ember.set;
-var computed = Ember.computed;
-
-export default Ember.Service.extend({
+export default Service.extend({
 
   /**
     @private
@@ -14,8 +12,9 @@ export default Ember.Service.extend({
     accessed by name via the `find` method.
    */
   init() {
-    set(this, 'queues',new Map());
-    set(this, 'all', Ember.A());
+    this._super(...arguments);
+    set(this, 'queues', new Map());
+    set(this, 'all', A());
   },
 
   files: computed('all.@each.length', {
@@ -26,7 +25,7 @@ export default Ember.Service.extend({
 
   size: computed('all.@each.size', {
     get() {
-      return Ember.A(get(this, 'all').getEach('size')).reduce(function (E, x) {
+      return A(get(this, 'all').getEach('size')).reduce(function (E, x) {
         return E + x;
       }, 0);
     }
@@ -34,13 +33,13 @@ export default Ember.Service.extend({
 
   loaded: computed('all.@each.loaded', {
     get() {
-      return Ember.A(get(this, 'all').getEach('loaded')).reduce(function (E, x) {
+      return A(get(this, 'all').getEach('loaded')).reduce(function (E, x) {
         return E + x;
       }, 0);
     }
   }),
 
-  progress: Ember.computed('size', 'loaded', function () {
+  progress: computed('size', 'loaded', function () {
     let percent = get(this, 'loaded') / get(this, 'size') || 0;
     return Math.floor(percent * 100);
   }),
@@ -56,8 +55,9 @@ export default Ember.Service.extend({
   findOrCreate(name, component, config) {
     var queue;
 
-    if (get(this, 'queues').has(name)) {
-      queue = get(this, 'queues').get(name);
+    let queues = get(this, 'queues');
+    if (queues.has(name)) {
+      queue = queues.get(name);
       if (config != null) {
         set(queue, 'target', component);
         queue.configure(config);
@@ -68,7 +68,7 @@ export default Ember.Service.extend({
         target: component
       });
       get(this, 'all').pushObject(queue);
-      get(this, 'queues').set(name, queue);
+      queues.set(name, queue);
       queue.configure(config);
     }
     return queue;

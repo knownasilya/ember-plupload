@@ -1,9 +1,8 @@
-import Ember from 'ember';
-
-var get = Ember.get;
+import { A } from '@ember/array';
+import { get } from '@ember/object';
 
 export default function (target, key) {
-  return Ember.A(target).reduce(function (E, obj) {
+  return A(target).reduce(function (E, obj) {
     return E + get(obj, key);
   }, 0);
 }

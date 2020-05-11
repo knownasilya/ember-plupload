@@ -4,12 +4,12 @@ import {
   test
 } from 'qunit';
 
-module('trim');
+module('trim', function() {
+  test('trims whitespace from strings', function (assert) {
+    assert.equal(trim('    trim me        '), 'trim me');
+  });
 
-test('trims whitespace from strings', function (assert) {
-  assert.equal(trim('    trim me        '), 'trim me');
-});
-
-test('returns an empty string if null is provided', function (assert) {
-  assert.equal(trim(null), '');
+  test('returns an empty string if null is provided', function (assert) {
+    assert.equal(trim(null), '');
+  });
 });

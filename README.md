@@ -59,8 +59,12 @@ The cleanest approach to configure uploaders is to create a component that encap
 For example, creating an image uploader that uploads images to your API server would look like:
 
 ```handlebars
-{{#pl-uploader for="upload-image" extensions="jpg jpeg png gif" onfileadd="uploadImage" as |queue dropzone|}}
-  <div class="dropzone" id={{dropzone.id}}>
+{{#pl-uploader
+  for='upload-image'
+  extensions='jpg jpeg png gif'
+  onfileadd=(action 'uploadImage')
+as |queue dropzone|}}
+  <div class='dropzone' id={{dropzone.id}}>
     {{#if dropzone.active}}
       {{#if dropzone.valid}}
         Drop to upload
@@ -75,7 +79,7 @@ For example, creating an image uploader that uploads images to your API server w
         {{#if dropzone.enabled}}
           Drag and drop images onto this area to upload them or
         {{/if}}
-        <a id="upload-image">Add an Image.</a>
+        <a id='upload-image'>Add an Image.</a>
       </p>
     {{/if}}
   </div>
@@ -356,27 +360,44 @@ export default Ember.Route.extend({
 });
 ```
 
-# Installation
+## Installation
 
 * `ember install ember-plupload`
 
-## Running
+### Linting
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+* `npm run lint:hbs`
+* `npm run lint:js`
+* `npm run lint:js -- --fix`
 
-## Running Tests
+### Running tests
 
-* `ember test`
-* `ember test --server`
+* `ember test` – Runs the test suite on the current Ember version
+* `ember test --server` – Runs the test suite in "watch mode"
+* `ember try:each` – Runs the test suite against multiple Ember versions
 
-# Contributing
+### Running the dummy application
 
-Contributors are welcome! Please provide a reproducible test case. Details will be worked out on a case-per-case basis. Maintainers will get in touch when they can, so delays are possible. For contribution guidelines, see the [code of conduct](https://github.com/tim-evans/ember-plupload/blob/master/CONDUCT.md).
+* `ember serve`
+* Visit the dummy application at [http://localhost:4200](http://localhost:4200).
 
+For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
 
-## Publishing
+## Contributing
+
+Contributors are welcome! Please provide a reproducible test case.
+Details will be worked out on a case-per-case basis.
+Maintainers will get in touch when they can, so delays are possible.
+For contribution guidelines,
+see the [code of conduct](https://github.com/tim-evans/ember-plupload/blob/master/CONDUCT.md).
+
+### Publishing
 
 * `ember github-pages:commit --message "Releasing docs"`
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+
+License
+------------------------------------------------------------
+
+This project is licensed under the [MIT License](LICENSE.md).

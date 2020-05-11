@@ -1,21 +1,19 @@
 /* global moxie, plupload */
-import Ember from 'ember';
+import { copy } from 'ember-copy';
 
-const get = Ember.get;
-const alias = Ember.computed.alias;
-const reads = Ember.computed.reads;
-
-const RSVP = Ember.RSVP;
+import EmberArray, { A } from '@ember/array';
+import { alias, reads } from '@ember/object/computed';
+import RSVP from 'rsvp';
+import EmberObject, { get, computed } from '@ember/object';
 const moxieFileReader = function () {
   return new moxie.file.FileReader();
 };
 
 const keys = Object.keys;
-const computed = Ember.computed;
 
 const mergeDefaults = function (defaults, options) {
-  const unsetKeys = Ember.A(keys(defaults)).removeObjects(keys(options));
-  const settings = Ember.copy(options, true);
+  const unsetKeys = A(keys(defaults)).removeObjects(keys(options));
+  const settings = copy(options, true);
 
   for (let i = 0, len = unsetKeys.length; i < len; i++) {
     let key = unsetKeys[i];
@@ -41,8 +39,8 @@ const settingsToConfig = function (settings) {
   }, settings);
 
   if (headers.Accept == null) {
-    if (!Ember.Array.detect(accepts)) {
-      accepts = Ember.A([accepts]).compact();
+    if (!EmberArray.detect(accepts)) {
+      accepts = A([accepts]).compact();
     }
     headers.Accept = accepts.join(',');
   }
@@ -77,7 +75,7 @@ const settingsToConfig = function (settings) {
   @class File
   @extends Ember.Object
  */
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
     The unique ID of the file.
